@@ -1,0 +1,7 @@
+{
+    "exportall.config.folderListener": [
+        "/src/math",
+        "/src/editor",
+        "/src/primitives"
+    ]
+}

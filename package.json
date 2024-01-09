@@ -1,0 +1,29 @@
+{
+  "name": "typescript-virtual-world",
+  "version": "1.0.0",
+  "description": "Virtual World",
+  "main": "dist/index",
+  "types": "dist/index",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --open"
+  },
+  "author": "Martijn Kooij",
+  "license": "",
+  "devDependencies": {
+    "@types/eslint": "^8",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "eslint": "^8.56.0",
+    "ts-loader": "^9.5.1",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "tslint": "^6.1.3",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
