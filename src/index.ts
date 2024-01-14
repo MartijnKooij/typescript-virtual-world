@@ -1,11 +1,13 @@
 import { GraphEditor, Viewport } from './editor';
 import { Graph } from './math';
-import { Point, Segment } from './primitives';
+import { Envelope } from './primitives';
+import { World } from './world';
 
 class App {
   private canvas: HTMLCanvasElement;
   private graphEditor: GraphEditor;
   private viewport: Viewport;
+  private world: World;
   private graph: Graph;
   private ctx: CanvasRenderingContext2D;
 
@@ -19,6 +21,7 @@ class App {
     const graphData = localStorage.getItem('graph');
     const graphInfo = graphData ? JSON.parse(graphData) : null;
     this.graph = graphInfo ? Graph.load(graphInfo) : new Graph();
+    this.world = new World(this.graph);
     this.viewport = new Viewport(this.canvas);
     this.graphEditor = new GraphEditor(this.viewport, this.graph);
 
@@ -27,6 +30,9 @@ class App {
 
   animate() {
     this.viewport.reset();
+    this.world.generate();
+    this.world.draw(this.ctx);
+    this.ctx.globalAlpha = 0.3;
     this.graphEditor.display();
     requestAnimationFrame(() => this.animate());
   }

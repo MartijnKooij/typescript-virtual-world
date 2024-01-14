@@ -1,7 +1,16 @@
+import { distance, normalize, subtract } from '@world/math';
 import { Point } from './point';
 
 export class Segment {
   constructor(public p1: Point, public p2: Point) { }
+
+  length() {
+    return distance(this.p1, this.p2);
+  }
+
+  directionVector() {
+    return normalize(subtract(this.p2, this.p1));
+  }
 
   equals(segment: Segment) {
     return this.includes(segment.p1) && this.includes(segment.p2);
