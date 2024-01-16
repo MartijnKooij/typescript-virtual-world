@@ -1,5 +1,5 @@
 import { GraphEditor, Viewport } from './editor';
-import { Graph } from './math';
+import { Graph, scale } from './math';
 import { Envelope } from './primitives';
 import { World } from './world';
 
@@ -36,7 +36,8 @@ class App {
       this.world.generate();
       this.graphHash = this.graph.hash();
     }
-    this.world.draw(this.ctx);
+    const viewPoint = scale(this.viewport.getOffset(), -1);
+    this.world.draw(this.ctx, viewPoint);
     this.ctx.globalAlpha = 0.3;
     this.graphEditor.display();
     requestAnimationFrame(() => this.animate());
