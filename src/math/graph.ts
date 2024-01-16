@@ -10,6 +10,10 @@ export class Graph {
       graphPoints.find(p => p.equals(s.p2)))));
   }
 
+  hash() {
+    return JSON.stringify(this);
+  }
+
   addPoint(point: Point) {
     this.points.push(point);
   }

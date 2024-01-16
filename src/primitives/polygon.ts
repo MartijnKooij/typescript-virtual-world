@@ -73,6 +73,14 @@ export class Polygon {
     return false;
   }
 
+  distanceToPoly(poly: Polygon) {
+    return Math.min(...this.points.map(p => poly.distanceToPoint(p)));
+  }
+
+  distanceToPoint(p: Point) {
+    return Math.min(...this.segments.map(s => s.distanceToPoint(p)));
+  }
+
   containsSegment(seg: Segment) {
     const midpoint = average(seg.p1, seg.p2)
     return this.containsPoint(midpoint);

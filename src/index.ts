@@ -9,6 +9,7 @@ class App {
   private viewport: Viewport;
   private world: World;
   private graph: Graph;
+  private graphHash: string;
   private ctx: CanvasRenderingContext2D;
 
   constructor() {
@@ -25,12 +26,16 @@ class App {
     this.viewport = new Viewport(this.canvas);
     this.graphEditor = new GraphEditor(this.viewport, this.graph);
 
+    this.graphHash = this.graph.hash();
     this.animate();
   }
 
   animate() {
     this.viewport.reset();
-    this.world.generate();
+    if (this.graphHash != this.graph.hash()) {
+      this.world.generate();
+      this.graphHash = this.graph.hash();
+    }
     this.world.draw(this.ctx);
     this.ctx.globalAlpha = 0.3;
     this.graphEditor.display();
