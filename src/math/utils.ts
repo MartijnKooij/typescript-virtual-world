@@ -85,8 +85,14 @@ export function lerp2D(A: Point, B: Point, t: number) {
   return new Point(lerp(A.x, B.x, t), lerp(A.y, B.y, t));
 }
 
-
 export function getRandomColor() {
   const hue = 290 + Math.random() * 260;
   return "hsl(" + hue + ", 100%, 60%)";
+}
+
+export function getFake3dPoint(point: Point, viewPoint: Point, height: number) {
+  const dir = normalize(subtract(point, viewPoint));
+  const dist = distance(point, viewPoint);
+  const scaler = Math.atan(dist / 300) / (Math.PI / 2);
+  return add(point, scale(dir, height * scaler));
 }

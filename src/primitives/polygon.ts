@@ -104,11 +104,12 @@ export class Polygon {
     })
   }
 
-  draw(ctx: CanvasRenderingContext2D, { stroke = 'blue', lineWidth = 2, fill = 'rgba(0,0,255,0.3' } = {}) {
+  draw(ctx: CanvasRenderingContext2D, { stroke = 'blue', lineWidth = 2, fill = 'rgba(0,0,255,0.3', join = 'miter' } = {}) {
     ctx.beginPath();
     ctx.fillStyle = fill;
     ctx.strokeStyle = stroke;
     ctx.lineWidth = lineWidth;
+    ctx.lineJoin = join as CanvasLineJoin;
     ctx.moveTo(this.points[0].x, this.points[0].y);
     for (let p = 1; p < this.points.length; p++) {
       ctx.lineTo(this.points[p].x, this.points[p].y);
