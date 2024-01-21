@@ -1,11 +1,10 @@
-import { GraphEditor, Viewport } from './editor';
+import { CrossingEditor, GraphEditor, MarkingEditor, StopSignEditor, Viewport } from './editor';
 import { Graph, scale } from './math';
-import { Envelope } from './primitives';
 import { World } from './world';
 
 class App {
   private canvas: HTMLCanvasElement;
-  private graphEditor: GraphEditor;
+  private tools: Map<string, MarkingEditor | GraphEditor> = new Map();
   private viewport: Viewport;
   private world: World;
   private graph: Graph;
@@ -14,7 +13,7 @@ class App {
 
   constructor() {
     this.canvas = document.getElementById('worldCanvas') as HTMLCanvasElement;
-    this.canvas.width = 600;
+    this.canvas.width = 1600;
     this.canvas.height = 500;
 
     this.ctx = this.canvas.getContext('2d');
@@ -24,9 +23,14 @@ class App {
     this.graph = graphInfo ? Graph.load(graphInfo) : new Graph();
     this.world = new World(this.graph);
     this.viewport = new Viewport(this.canvas);
-    this.graphEditor = new GraphEditor(this.viewport, this.graph);
+    this.tools.set('graphEditor', new GraphEditor(this.viewport, this.graph));
+    this.tools.set('stopSignEditor', new StopSignEditor(this.viewport, this.world));
+    this.tools.set('crossingEditor', new CrossingEditor(this.viewport, this.world));
+
 
     this.graphHash = this.graph.hash();
+
+    this.setMode('graphEditor');
     this.animate();
   }
 
@@ -39,7 +43,9 @@ class App {
     const viewPoint = scale(this.viewport.getOffset(), -1);
     this.world.draw(this.ctx, viewPoint);
     this.ctx.globalAlpha = 0.3;
-    this.graphEditor.display();
+    this.tools.forEach(tool => {
+      tool.display();
+    });
     requestAnimationFrame(() => this.animate());
   }
 
@@ -48,7 +54,30 @@ class App {
   }
 
   clear() {
-    this.graphEditor.dispose();
+    this.tools.forEach(tool => {
+      tool.dispose();
+    });
+    this.world.dispose();
+  }
+
+  setMode(mode: string) {
+    this.disableEditors();
+
+    const button = document.querySelector('#' + mode) as HTMLButtonElement;
+    button.style.backgroundColor = 'white';
+    button.style.filter = '';
+
+    this.tools.forEach((tool, key) => {
+      tool.enabled = mode === key;
+    });
+  }
+
+  private disableEditors() {
+    this.tools.forEach((_, key) => {
+      const button = document.querySelector(`#${key}`) as HTMLButtonElement;
+      button.style.backgroundColor = 'gray';
+      button.style.filter = 'grayscale(100%)';
+    });
   }
 }
 
@@ -57,4 +86,9 @@ const app = new App();
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#save').addEventListener('click', () => app.save());
   document.querySelector('#clear').addEventListener('click', () => app.clear());
+  document.querySelector('#graphEditor').addEventListener('click', () => app.setMode('graphEditor'));
+  document.querySelector('#stopSignEditor').addEventListener('click', () => app.setMode('stopSignEditor'));
+  document.querySelector('#crossingEditor').addEventListener('click', () => app.setMode('crossingEditor'));
 });
+
+

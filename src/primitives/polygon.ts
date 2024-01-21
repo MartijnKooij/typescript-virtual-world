@@ -3,7 +3,7 @@ import { Point } from './point';
 import { Segment } from './segment';
 
 export class Polygon {
-  private segments: Segment[] = [];
+  segments: Segment[] = [];
 
   constructor(public points: Point[]) {
     for (let i = 1; i <= points.length; i++) {

@@ -10,10 +10,19 @@ export class GraphEditor {
   private mouse: Point = null;
   private dragging = false;
 
+  set enabled(value: boolean) {
+    if (value) {
+      this.addEventListeners();
+    } else {
+      this.removeEventListeners();
+      this.selected = null;
+      this.hovered = null;
+    }
+  }
+
   constructor(private viewport: Viewport, public graph: Graph) {
     this.canvas = this.viewport.canvas;
     this.ctx = this.canvas.getContext('2d');
-    this.addEventListeners();
   }
 
   dispose() {

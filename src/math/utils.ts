@@ -1,4 +1,17 @@
-import { Point } from '@world/primitives';
+import { Point, Segment } from '@world/primitives';
+
+export function getNearestSegment(target: Point, segments: Segment[], threshold = Number.MAX_SAFE_INTEGER): Segment {
+  let minDist = Number.MAX_SAFE_INTEGER;
+  let nearest = null;
+  for (const source of segments) {
+    const dist = source.distanceToPoint(target);
+    if (dist < minDist && dist < threshold) {
+      minDist = dist;
+      nearest = source;
+    }
+  }
+  return nearest;
+}
 
 export function getNearestPoint(target: Point, points: Point[], threshold = Number.MAX_SAFE_INTEGER): Point {
   let minDist = Number.MAX_SAFE_INTEGER;
@@ -43,6 +56,10 @@ export function normalize(p: Point) {
 
 export function magnitude(p: Point) {
   return Math.hypot(p.x, p.y);
+}
+
+export function perpendicular(p: Point) {
+  return new Point(-p.y, p.x);
 }
 
 export function translate(loc: Point, angle: number, offset: number) {

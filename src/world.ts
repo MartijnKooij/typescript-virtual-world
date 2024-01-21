@@ -1,4 +1,5 @@
 import { Building, Tree } from './items';
+import { StopSign } from './markings/stop-sign';
 import { Graph, add, distance, lerp, scale } from './math';
 import { Envelope, Point, Polygon, Segment } from './primitives';
 
@@ -7,16 +8,22 @@ export class World {
   private roadBorders: Segment[] = [];
   private buildings: Building[] = [];
   private trees: Tree[] = [];
+  laneGuides: Segment[] = [];
+  markings: any[] = [];
 
   constructor(
     public graph: Graph,
-    private roadWidth = 100,
+    public roadWidth = 100,
     private roadRoundness = 10,
     private buildingWidth = 150,
     private buildingMinLength = 150,
-    private spacing = 50,
+    private spacing = 150,
     private treeSize = 160) {
     this.generate();
+  }
+
+  dispose() {
+    this.markings.length = 0;
   }
 
   generate() {
@@ -30,6 +37,24 @@ export class World {
     this.roadBorders = Polygon.union(this.envelopes.map(e => e.poly));
     this.buildings = this.generateBuildings();
     this.trees = this.generateTrees();
+    this.laneGuides.length = 0;
+    this.laneGuides.push(...this.generateLaneGuides());
+  }
+
+  private generateLaneGuides() {
+    const tmpEnvelopes: Envelope[] = [];
+    for (const seg of this.graph.segments) {
+      tmpEnvelopes.push(
+        new Envelope(
+          seg,
+          this.roadWidth / 2,
+          this.roadRoundness
+        )
+      );
+    }
+    const segments = Polygon.union(tmpEnvelopes.map(e => e.poly));
+
+    return segments;
   }
 
   private generateBuildings() {
@@ -134,6 +159,9 @@ export class World {
   draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
     for (const env of this.envelopes) {
       env.draw(ctx, { fill: '#BBB', stroke: '#BBB', lineWidth: 15 });
+    }
+    for (const marking of this.markings) {
+      marking.draw(ctx);
     }
     for (const seg of this.graph.segments) {
       seg.draw(ctx, { color: 'white', width: 4, dash: [10, 10] });

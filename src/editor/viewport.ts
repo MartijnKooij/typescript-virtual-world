@@ -3,6 +3,8 @@ import { Point } from '@world/primitives';
 
 export class Viewport {
   private ctx: CanvasRenderingContext2D;
+  private maxZoom = 10;
+
   zoom = 1;
   center: Point = null;
   offset = new Point(0, 0);
@@ -89,9 +91,9 @@ export class Viewport {
 
   private handleMouseWheel = (evt: WheelEvent) => {
     const direction = Math.sign(evt.deltaY);
-    const step = 0.1;
+    const step = 0.2;
     this.zoom += direction * step;
-    this.zoom = Math.max(1, Math.min(this.zoom, 5));
+    this.zoom = Math.max(1, Math.min(this.zoom, this.maxZoom));
   };
 }
 
