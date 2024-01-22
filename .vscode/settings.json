@@ -3,6 +3,7 @@
         "/src/math",
         "/src/editor",
         "/src/primitives",
-        "/src/items"
+        "/src/items",
+        "/src/markings"
     ]
 }

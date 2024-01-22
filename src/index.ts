@@ -1,4 +1,4 @@
-import { CrossingEditor, GraphEditor, MarkingEditor, StopSignEditor, Viewport } from './editor';
+import { CrossingEditor, GraphEditor, LightEditor, MarkingEditor, ParkingEditor, StartEditor, StopSignEditor, TargetEditor, Viewport, YieldEditor } from './editor';
 import { Graph, scale } from './math';
 import { World } from './world';
 
@@ -26,7 +26,11 @@ class App {
     this.tools.set('graphEditor', new GraphEditor(this.viewport, this.graph));
     this.tools.set('stopSignEditor', new StopSignEditor(this.viewport, this.world));
     this.tools.set('crossingEditor', new CrossingEditor(this.viewport, this.world));
-
+    this.tools.set('startEditor', new StartEditor(this.viewport, this.world));
+    this.tools.set('targetEditor', new TargetEditor(this.viewport, this.world));
+    this.tools.set('yieldEditor', new YieldEditor(this.viewport, this.world));
+    this.tools.set('parkingEditor', new ParkingEditor(this.viewport, this.world));
+    this.tools.set('lightEditor', new LightEditor(this.viewport, this.world));
 
     this.graphHash = this.graph.hash();
 
@@ -89,6 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#graphEditor').addEventListener('click', () => app.setMode('graphEditor'));
   document.querySelector('#stopSignEditor').addEventListener('click', () => app.setMode('stopSignEditor'));
   document.querySelector('#crossingEditor').addEventListener('click', () => app.setMode('crossingEditor'));
+  document.querySelector('#startEditor').addEventListener('click', () => app.setMode('startEditor'));
+  document.querySelector('#targetEditor').addEventListener('click', () => app.setMode('targetEditor'));
+  document.querySelector('#yieldEditor').addEventListener('click', () => app.setMode('yieldEditor'));
+  document.querySelector('#parkingEditor').addEventListener('click', () => app.setMode('parkingEditor'));
+  document.querySelector('#lightEditor').addEventListener('click', () => app.setMode('lightEditor'));
 });
 
 

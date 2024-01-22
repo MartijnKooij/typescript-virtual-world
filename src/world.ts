@@ -1,6 +1,7 @@
 import { Building, Tree } from './items';
+import { Light } from './markings';
 import { StopSign } from './markings/stop-sign';
-import { Graph, add, distance, lerp, scale } from './math';
+import { Graph, add, distance, getNearestPoint, lerp, scale } from './math';
 import { Envelope, Point, Polygon, Segment } from './primitives';
 
 export class World {
@@ -8,6 +9,7 @@ export class World {
   private roadBorders: Segment[] = [];
   private buildings: Building[] = [];
   private trees: Tree[] = [];
+  private frameCount: number = 0;
   laneGuides: Segment[] = [];
   markings: any[] = [];
 
@@ -156,7 +158,62 @@ export class World {
     return trees;
   }
 
+  private getIntersections() {
+    const subset = [];
+    for (const point of this.graph.points) {
+      let degree = 0;
+      for (const seg of this.graph.segments) {
+        if (seg.includes(point)) {
+          degree++;
+        }
+      }
+
+      if (degree > 2) {
+        subset.push(point);
+      }
+    }
+    return subset;
+  }
+
+  private updateLights() {
+    const lights = this.markings.filter((m) => m instanceof Light);
+    const controlCenters: Map<Point, { ticks: number, lights: Light[] }> = new Map();
+    for (const light of lights) {
+      const point = getNearestPoint(light.center, this.getIntersections());
+      if (!controlCenters.has(point)) {
+        controlCenters.set(new Point(point.x, point.y), { ticks: 0, lights: [light] });
+      } else {
+        const controlCenter = controlCenters.get(point);
+        controlCenter.lights.push(light);
+      }
+    }
+    const greenDuration = 2,
+      orangeDuration = 1;
+    for (const center of controlCenters.entries()) {
+      center[1].ticks = center[1].lights.length * (greenDuration + orangeDuration);
+    }
+    const tick = Math.floor(this.frameCount / 60);
+    for (const center of controlCenters) {
+      const cTick = tick % center[1].ticks;
+      const isGreenOrOrange = cTick != 0;
+      const greenOrangeState =
+        cTick % (greenDuration + orangeDuration) < greenDuration
+          ? 'green'
+          : 'orange';
+      for (let i = 0; i < center[1].lights.length; i++) {
+        if (isGreenOrOrange) {
+          center[1].lights[i].state = greenOrangeState;
+        } else {
+          center[1].lights[i].state = 'red';
+        }
+      }
+    }
+    this.frameCount++;
+  }
+
   draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
+    this.updateLights();
+
     for (const env of this.envelopes) {
       env.draw(ctx, { fill: '#BBB', stroke: '#BBB', lineWidth: 15 });
     }

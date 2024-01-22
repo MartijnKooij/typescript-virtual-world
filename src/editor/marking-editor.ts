@@ -2,7 +2,7 @@ import { World } from '@world/world';
 import { Viewport } from './viewport';
 import { Point, Segment } from '@world/primitives';
 import { getNearestSegment } from '@world/math';
-import { Marking } from '@world/markings/marking';
+import { Marking } from '@world/markings';
 
 export abstract class MarkingEditor {
   private canvas: HTMLCanvasElement;
