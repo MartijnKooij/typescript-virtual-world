@@ -5,9 +5,7 @@ export class Viewport {
   private ctx: CanvasRenderingContext2D;
   private maxZoom = 10;
 
-  zoom = 1;
   center: Point = null;
-  offset = new Point(0, 0);
   drag: ViewportDrag = {
     start: new Point(0, 0),
     end: new Point(0, 0),
@@ -15,10 +13,10 @@ export class Viewport {
     active: false
   };
 
-  constructor(public canvas: HTMLCanvasElement) {
+  constructor(public canvas: HTMLCanvasElement, public zoom: number = 1, public offset: Point = null) {
     this.ctx = this.canvas.getContext('2d');
     this.center = new Point(this.canvas.width / 2, this.canvas.height / 2);
-    this.offset = scale(this.center, -1);
+    this.offset = offset ?? scale(this.center, -1);
     this.addEventListeners();
   }
 

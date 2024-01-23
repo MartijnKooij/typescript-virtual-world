@@ -5,8 +5,18 @@ import { Segment } from './segment';
 export class Envelope {
   poly: Polygon;
 
-  constructor(private skeleton: Segment, width: number, roundness = 0) {
-    this.poly = this.generatePoly(width, roundness);
+  constructor(private skeleton: Segment, private width: number, private roundness = 0) {
+    if (skeleton) {
+      this.poly = this.generatePoly(width, roundness);
+    }
+  }
+
+  static load(info: Envelope): Envelope {
+    const env = new Envelope(null, info.width, info.roundness);
+    env.skeleton = new Segment(info.skeleton.p1, info.skeleton.p2);
+    env.poly = Polygon.load(info.poly);
+
+    return env;
   }
 
   private generatePoly(width: number, roundness: number): Polygon {

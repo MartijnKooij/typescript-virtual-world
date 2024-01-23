@@ -1,6 +1,5 @@
 import { Building, Tree } from './items';
-import { Light } from './markings';
-import { StopSign } from './markings/stop-sign';
+import { Light, Marking, MarkingLoader } from './markings';
 import { Graph, add, distance, getNearestPoint, lerp, scale } from './math';
 import { Envelope, Point, Polygon, Segment } from './primitives';
 
@@ -12,6 +11,8 @@ export class World {
   private frameCount: number = 0;
   laneGuides: Segment[] = [];
   markings: any[] = [];
+  zoom: number = 0;
+  offset: Point = null;
 
   constructor(
     public graph: Graph,
@@ -22,6 +23,30 @@ export class World {
     private spacing = 150,
     private treeSize = 160) {
     this.generate();
+  }
+
+  static load(info: World): World {
+    const world = new World(new Graph());
+    world.graph = Graph.load(info.graph);
+
+    world.roadWidth = info.roadWidth;
+    world.roadRoundness = info.roadRoundness;
+    world.buildingWidth = info.buildingWidth;
+    world.buildingMinLength = info.buildingMinLength;
+    world.spacing = info.spacing;
+    world.treeSize = info.treeSize;
+
+    world.envelopes = info.envelopes.map(e => Envelope.load(e));
+    world.roadBorders = info.roadBorders.map(b => new Segment(b.p1, b.p2));
+    world.buildings = info.buildings.map(b => Building.load(b));
+    world.trees = info.trees.map(t => Tree.load(t));
+    world.laneGuides = info.laneGuides.map(l => new Segment(l.p1, l.p2));
+    world.markings = info.markings.map(m => MarkingLoader.load(m));
+
+    world.zoom = info.zoom;
+    world.offset = new Point(info.offset.x, info.offset.y);
+
+    return world;
   }
 
   dispose() {

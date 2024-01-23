@@ -1,5 +1,6 @@
 export * from './crossing';
 export * from './light';
+export * from './marking-loader';
 export * from './marking';
 export * from './parking';
 export * from './start';

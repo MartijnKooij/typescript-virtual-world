@@ -11,6 +11,10 @@ export class Polygon {
     }
   }
 
+  static load(info: Polygon): Polygon {
+    return new Polygon(info.points.map(i => new Point(i.x, i.y)));
+  }
+
   static union(polygons: Polygon[]) {
     Polygon.multiBreak(polygons);
     const keptSegments = [];

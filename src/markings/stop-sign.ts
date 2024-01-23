@@ -8,6 +8,7 @@ export class StopSign extends Marking {
   constructor(center: Point, directionVector: Point, width: number, height: number) {
     super(center, directionVector, width, height);
     this.border = this.poly.segments[2];
+    this.type = 'stop-sign';
   }
 
   override draw(ctx: CanvasRenderingContext2D) {

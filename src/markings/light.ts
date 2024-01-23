@@ -11,6 +11,7 @@ export class Light extends Marking {
 
     this.state = 'off';
     this.border = this.poly.segments[0];
+    this.type = 'light';
   }
 
   override draw(ctx: CanvasRenderingContext2D) {

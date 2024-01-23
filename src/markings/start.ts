@@ -9,6 +9,7 @@ export class Start extends Marking {
     super(center, directionVector, width, height);
     this.image = new Image();
     this.image.src = 'car.png';
+    this.type = 'start';
   }
 
   override draw(ctx: CanvasRenderingContext2D) {

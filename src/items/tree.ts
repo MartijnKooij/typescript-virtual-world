@@ -8,6 +8,10 @@ export class Tree {
     this.base = this.generateLevel(this.center, this.size);
   }
 
+  static load(info: Tree): Tree {
+    return new Tree(info.center, info.size);
+  }
+
   draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
     const top = getFake3dPoint(this.center, viewPoint, this.height);
 

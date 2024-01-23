@@ -18,11 +18,12 @@ class App {
 
     this.ctx = this.canvas.getContext('2d');
 
-    const graphData = localStorage.getItem('graph');
-    const graphInfo = graphData ? JSON.parse(graphData) : null;
-    this.graph = graphInfo ? Graph.load(graphInfo) : new Graph();
-    this.world = new World(this.graph);
-    this.viewport = new Viewport(this.canvas);
+    const worldData = localStorage.getItem('world');
+    const worldInfo = worldData ? JSON.parse(worldData) : null;
+    this.world = worldInfo ? World.load(worldInfo) : new World(new Graph());
+    this.graph = this.world.graph;
+
+    this.viewport = new Viewport(this.canvas, this.world.zoom, this.world.offset);
     this.tools.set('graphEditor', new GraphEditor(this.viewport, this.graph));
     this.tools.set('stopSignEditor', new StopSignEditor(this.viewport, this.world));
     this.tools.set('crossingEditor', new CrossingEditor(this.viewport, this.world));
@@ -54,7 +55,34 @@ class App {
   }
 
   save() {
-    localStorage.setItem('graph', JSON.stringify(this.graph));
+    this.world.zoom = this.viewport.zoom;
+    this.world.offset = this.viewport.offset;
+
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.world)));
+    element.setAttribute('download', 'wy.world');
+    element.click();
+    localStorage.setItem('world', JSON.stringify(this.world));
+  }
+
+  load(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+
+    if (!file) {
+      alert('No file selected');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const fileContents = evt.target.result as string;
+      const worldData = JSON.parse(JSON.stringify(fileContents));
+      const worldInfo = worldData ? JSON.parse(worldData) : null;
+      this.world = worldInfo ? World.load(worldInfo) : new World(new Graph());
+      localStorage.setItem('world', JSON.stringify(this.world));
+      window.location.reload();
+    }
+    reader.readAsText(file);
   }
 
   clear() {
@@ -98,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#yieldEditor').addEventListener('click', () => app.setMode('yieldEditor'));
   document.querySelector('#parkingEditor').addEventListener('click', () => app.setMode('parkingEditor'));
   document.querySelector('#lightEditor').addEventListener('click', () => app.setMode('lightEditor'));
+  document.querySelector('#fileInput').addEventListener('change', (event) => app.load(event));
 });
 
 

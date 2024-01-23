@@ -7,6 +7,7 @@ export class Target extends Marking {
 
   constructor(center: Point, directionVector: Point, width: number, height: number) {
     super(center, directionVector, width, height);
+    this.type = 'target';
   }
 
   override draw(ctx: CanvasRenderingContext2D) {

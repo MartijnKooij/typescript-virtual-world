@@ -5,8 +5,9 @@ export abstract class Marking {
   private support: Segment;
 
   poly: Polygon;
+  type: 'unknown' | 'crossing' | 'light' | 'parking' | 'start' | 'stop-sign' | 'target' | 'yield' = 'unknown';
 
-  constructor(protected center: Point, protected directionVector: Point, protected width: number, protected height: number) {
+  constructor(public center: Point, public directionVector: Point, public width: number, public height: number) {
     this.support = new Segment(
       translate(this.center, angle(this.directionVector), this.height / 2),
       translate(this.center, angle(this.directionVector), -this.height / 2)

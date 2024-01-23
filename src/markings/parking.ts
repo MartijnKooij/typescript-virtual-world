@@ -8,6 +8,7 @@ export class Parking extends Marking {
   constructor(center: Point, directionVector: Point, width: number, height: number) {
     super(center, directionVector, width, height);
     this.borders = [this.poly.segments[0], this.poly.segments[2]];
+    this.type = 'parking';
   }
 
   override draw(ctx: CanvasRenderingContext2D) {
